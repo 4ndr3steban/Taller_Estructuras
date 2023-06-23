@@ -1,0 +1,30 @@
+Parque Arví - 6.305130, -75.486283
+Jardín Botánico - 6.266413, -75.567528
+Plaza Botero - 6.245740, -75.570289
+Parque de los Pies Descalzos - 6.240236, -75.573144
+Parque Explora - 6.260759, -75.569198
+Parque Lleras - 6.209731, -75.570810
+Museo de Antioquia - 6.251199, -75.570182
+Metro de Medellín - 6.269856, -75.567739
+Estadio Atanasio Girardot - 6.250701, -75.578562
+Pueblito Paisa - 6.251508, -75.561996
+Parque de los Deseos - 6.263304, -75.568645
+Cerro Nutibara - 6.251462, -75.568447
+Cerro El Volador - 6.291725, -75.561254
+Parque Biblioteca España - 6.253545, -75.570101
+Parque de la Luz - 6.249019, -75.563414
+Museo El Castillo - 6.202295, -75.573245
+Teatro Metropolitano - 6.270647, -75.565736
+Parque del Poblado - 6.212288, -75.565982
+Parque Berrío - 6.251140, -75.571032
+Cerro Pan de Azúcar - 6.267649, -75.567321
+Jardín Circunvalar - 6.238073, -75.569808
+Parque Lineal La Presidenta - 6.210126, -75.577384
+Parque San Antonio - 6.245393, -75.571623
+Museo Cementerio San Pedro - 6.270759, -75.560645
+Parque Norte - 6.291090, -75.558911
+Parque de los Pájaros - 6.305576, -75.570177
+Centro Comercial Santa Fe - 6.270090, -75.578578
+Universidad EAFIT - 6.200436, -75.578570
+Parque El Poblado - 6.209620, -75.571033
+Parque de Envigado - 6.171018, -75.590492
