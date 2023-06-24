@@ -73,3 +73,28 @@ class Graph:
             current_vertex = previous_vertex
 
         return distances[destination], best_route
+    
+    def dfs(self, start_vertex, visited = None):
+        if not visited:
+            visited = []
+
+        visited.append(start_vertex)
+        
+        for neighbor in self.graph[start_vertex]:   
+            if neighbor not in visited:
+                self.dfs(neighbor, visited)
+        
+        return visited
+    
+    def bfs(self, start_vertex):
+        visited = []
+        queue = [start_vertex]
+
+        while queue:
+            vertex = queue.pop(0)
+            if vertex not in visited:
+                visited.append(vertex)
+                neighbors = self.graph[vertex]
+                queue.extend(neighbors)
+
+        return visited
