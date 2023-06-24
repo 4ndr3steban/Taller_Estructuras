@@ -53,7 +53,6 @@ class Graph:
                     min_distance = distances[vertex]
 
             visited.add(current_vertex)
-            print(visited)
 
             if current_vertex == destination:
                 break
