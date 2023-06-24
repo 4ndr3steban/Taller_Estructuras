@@ -1,7 +1,11 @@
+import os
+import webbrowser
+
 from Graph import Graph
 from HashTable import Hast_table_sc
 from haversine import haversine, Unit
 from pyvis.network import Network 
+from datetime import datetime
 
 class Main:
 
@@ -84,12 +88,17 @@ class Main:
         # creamos las conexiones entre los nodos
         for loc in nodes:
             for neighbor in self.grafo.graph[loc]:
-                net.add_edge(nodes[loc], nodes[neighbor], value=self.grafo.graph[loc][neighbor])
+                net.add_edge(nodes[loc], nodes[neighbor], 
+                             value=self.grafo.graph[loc][neighbor], 
+                             title=str(self.grafo.graph[loc][neighbor]))
 
         net.toggle_physics(True)
 
         # creamos el archivo html con la visualizacion del grafo
-        net.show(filename + ".html")
+        filename = filename + ".html"
+        net.show(filename)
+        webbrowser.open('file://' + os.path.realpath(filename))
+
 
     def agregar_pedido(self):
 
@@ -112,13 +121,15 @@ class Main:
 
         pedido["descripcion"] = input("Ingrese la descripcion de su pedido: ")
 
+        pedido["fecha"] = datetime.now()
+        pedido["estado"] = "sin entregar"
+        pedido["mensajero"] = "sin asignar"
 
-        print("Pedido agregado con exito con id: ", self.id_pedido, "\n")
+        #print("Pedido agregado con exito con id: ", self.id_pedido, "\n")
         
-
         # agregamos el pedido a la tabla hash del historial
-        self.historial.set_item(str(self.id_pedido), pedido)
-        self.id_pedido += 1
+        self.historial.set_item(pedido["ubicacion"], pedido)
+        #self.id_pedido += 1
 
         # agregamos la ubicacion del pedido al grafo 
         self.grafo.add_vertex(pedido["ubicacion"])
@@ -150,14 +161,33 @@ class Main:
     def main(self):
 
         self.inicializar_grafo()
-        self.visualize_graph("grafo base")
 
-        self.agregar_pedido()
-        self.visualize_graph("grafo con pedido1")
+        while True:
+            print("Representación de red de mensajería mediante grafos")
+            print("Por medio de este menú puede acceder a las diferentes funciones del grafo\n")
 
-        self.agregar_pedido()
-        self.visualize_graph("grafo con pedido2")
-        
+            print("0. Terminar ejecución")
+            print("1. Generar representación grafica del grafo")
+            print("2. Generar un nuevo pedido")
+            print("3. Mostrar historial de lugares con pedidos")
+            print("4. Consultar los detalles de pedidos en base a ubicacion")
+            
+            opcion = int(input("\nIngrese el numero de la opción deseada: "))
+            if opcion == 0:
+                break
+            elif opcion == 1:
+                self.visualize_graph("grafo")
+            elif opcion == 2:
+                self.agregar_pedido()
+            elif opcion == 3:
+                print("\n", self.historial.keys())
+            elif opcion == 4:
+                ubicacion = input("\nIngrese el nombre de la ubicación exacta: ")
+                pedido = self.historial.get_item(ubicacion)
+                for key in pedido:
+                    print(f"{key}: {pedido[key]}")
+
+            print()
 
 if __name__ == '__main__':
     
