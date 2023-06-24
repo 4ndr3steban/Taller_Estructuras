@@ -1,4 +1,4 @@
-from graph import Graph
+from Graph import Graph
 from haversine import haversine, Unit
 
 locations = Graph()
