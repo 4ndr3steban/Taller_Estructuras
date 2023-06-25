@@ -1,11 +1,13 @@
 import os
 import webbrowser
 
+from BinaryHeap import MinBinaryHeap
 from Graph import Graph
 from HashTable import Hast_table_sc
 from haversine import haversine, Unit
 from pyvis.network import Network 
 from datetime import datetime
+from itertools import permutations
 
 class Main:
 
@@ -251,7 +253,7 @@ class Main:
                 if i != len(hist)-1:
                     print()
         else:
-            print("Aun no hay pedidos")
+            print("No hay pedidos sin enviar")
 
     def consultar_enviados(self):
         hist = self.historial.items()
@@ -276,6 +278,39 @@ class Main:
         for loc in self.historial.keys():
             print(f"- {loc}")
         
+    def mejor_punto_partida(self):
+        heap = MinBinaryHeap()
+        ubicaciones_pedidos = self.historial.keys()
+
+        rutas = permutations(ubicaciones_pedidos)
+        for ruta in rutas:
+            costo = 0 
+            rut = []
+            for i in range(len(ruta)-1):
+                dist,path = self.grafo.dijkstra(ruta[i], ruta[i+1])
+                costo += dist
+                rut += path
+            heap.insert([costo, rut])
+
+        min = heap.delMin()
+        costo = min[0]
+        ruta_pedidos = [*min[1]]
+        primera_entrega = ruta_pedidos[0][0]
+        
+        punto_base = (float("inf"), None)
+        for neighbor in self.grafo.graph[primera_entrega]:
+            dist = self.grafo.graph[primera_entrega][neighbor] 
+            if  dist < punto_base[0] and neighbor not in ruta_pedidos[0]:
+                punto_base = dist, neighbor
+
+        ruta_pedidos.insert(0, [punto_base[1], primera_entrega])
+        costo += punto_base[0]
+
+        print(f"La mejor ruta es: {ruta_pedidos}")
+        print(f"Y hasta la entrega del ultimo pedido, recorre una distancia de: {costo} metros")
+
+        self.visualize_ruta(ruta_pedidos)
+
     def main(self):
 
         self.inicializar_grafo()
@@ -292,6 +327,7 @@ class Main:
             print("5. Consultar los detalles de pedidos NO entregados")
             print("6. Consultar los detalles de pedidos entregados")
             print("7. Enviar un pedido")
+            print("8. Encontrar mejor punto de partida para entregar todos los pedidos con un solo mensajero")
             
             try:
                 opcion = int(input("\nIngrese el numero de la opción deseada: "))
@@ -315,6 +351,8 @@ class Main:
                 self.consultar_enviados()
             elif opcion == 7:
                 self.enviar_pedido()
+            elif opcion == 8:
+                self.mejor_punto_partida()
 
             print()
 
