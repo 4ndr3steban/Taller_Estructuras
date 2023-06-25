@@ -284,27 +284,36 @@ class Main:
 
         rutas = permutations(ubicaciones_pedidos)
         for ruta in rutas:
-            costo = 0 
-            rut = []
+            punto_base = (float("inf"), None)
+            for neighbor in self.grafo.graph[ruta[0]]:
+                dist = self.grafo.graph[ruta[0]][neighbor] 
+                if  dist < punto_base[0] and neighbor not in ruta:
+                    punto_base = dist, neighbor
+                    
+            costo = punto_base[0] 
+            rut = [[punto_base[1], ruta[0]]]
             for i in range(len(ruta)-1):
                 dist,path = self.grafo.dijkstra(ruta[i], ruta[i+1])
                 costo += dist
                 rut += path
+                
             heap.insert([costo, rut])
 
         min = heap.delMin()
         costo = min[0]
         ruta_pedidos = [*min[1]]
-        primera_entrega = ruta_pedidos[0][0]
-        
+
+        #primera_entrega = ruta_pedidos[0][0]
+        """
         punto_base = (float("inf"), None)
         for neighbor in self.grafo.graph[primera_entrega]:
             dist = self.grafo.graph[primera_entrega][neighbor] 
             if  dist < punto_base[0] and neighbor not in ruta_pedidos[0]:
                 punto_base = dist, neighbor
-
-        ruta_pedidos.insert(0, [punto_base[1], primera_entrega])
-        costo += punto_base[0]
+        """
+                
+        #ruta_pedidos.insert(0, [punto_base[1], primera_entrega])
+        #costo += punto_base[0]
 
         print(f"La mejor ruta es: {ruta_pedidos}")
         print(f"Y hasta la entrega del ultimo pedido, recorre una distancia de: {costo} metros")
