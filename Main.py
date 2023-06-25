@@ -74,7 +74,7 @@ class Main:
 
         """
 
-    def visualize_graph(self, filename):
+    def visualize_graph(self):
 
         # creamos la lista de nodos, con un id especifico y el nombre del nodo
         nodes = {loc: idx for idx, loc in list(enumerate(self.grafo.graph))}
@@ -90,42 +90,70 @@ class Main:
             for neighbor in self.grafo.graph[loc]:
                 net.add_edge(nodes[loc], nodes[neighbor], 
                              value=self.grafo.graph[loc][neighbor], 
-                             title=str(self.grafo.graph[loc][neighbor]))
+                             title=str(self.grafo.graph[loc][neighbor])+" mts")
 
         net.toggle_physics(True)
 
         # creamos el archivo html con la visualizacion del grafo
-        filename = filename + ".html"
+        filename = "grafo.html"
         net.show(filename)
         webbrowser.open('file://' + os.path.realpath(filename))
 
+    def visualize_ruta(self, ruta):
+        # creamos la lista de nodos, con un id especifico y el nombre del nodo
+        nodes = {loc: idx for idx, loc in list(enumerate(self.grafo.graph))}
+        color = ["#ff0000" if any(nodo in sublist for sublist in ruta) else "#97c2fc" for nodo in nodes]
+
+        # creamos la instancia de la red
+        net = Network(notebook=True, cdn_resources="remote", height="1000px", width="100%")
+
+        # agregamos todos los nodos
+        net.add_nodes(list(nodes.values()), label=list(nodes.keys()), color=color)
+        
+        # creamos las conexiones entre los nodos
+        for loc in nodes:
+            for neighbor in self.grafo.graph[loc]:
+                net.add_edge(nodes[loc], nodes[neighbor], 
+                             value=self.grafo.graph[loc][neighbor], 
+                             title=str(self.grafo.graph[loc][neighbor])+ " mts")
+
+        net.inherit_edge_colors(True)
+        net.toggle_physics(True)
+
+        # creamos el archivo html con la visualizacion del grafo
+        net.show("grafo.html")
+        webbrowser.open('file://' + os.path.realpath("grafo.html"))
 
     def agregar_pedido(self):
 
         # creamos la instancia de cada pedido como un diccionario
         pedido = {}
 
-        # pedimos la informacion correspondiente de cada pedido
-
-        pedido["ubicacion"] = input("Ingrese el nombre del destino: ")
-
         while True:
-            coords = input("Ingrese las coordenadas del pedido en formato (lat, lon): ").split(", ")
-            if len(coords) == 2:
-                try:
+            # pedimos la informacion correspondiente de cada pedido
+            try:
+
+                pedido["ubicacion"] = input("Ingrese el nombre del destino: ")
+
+                coords = input("Ingrese las coordenadas del pedido en formato (lat, lon): ").split(", ")
+                if len(coords) == 2:
                     coords = tuple(map(lambda x: float(x), coords))
                     pedido["coordenadas"] = coords
-                    break
-                except:
-                    continue
+                else:
+                    raise RuntimeError
+                
+                pedido["descripcion"] = input("Ingrese la descripcion de su pedido: ")
+                break
 
-        pedido["descripcion"] = input("Ingrese la descripcion de su pedido: ")
+            except:
+                print("¡Ingrese los datos adecuadamente!\n")
+                continue
 
         pedido["fecha"] = datetime.now()
         pedido["estado"] = "sin entregar"
         pedido["mensajero"] = "sin asignar"
 
-        #print("Pedido agregado con exito con id: ", self.id_pedido, "\n")
+        print("\n¡Pedido agregado con exito!")
         
         # agregamos el pedido a la tabla hash del historial
         self.historial.set_item(pedido["ubicacion"], pedido)
@@ -176,6 +204,8 @@ class Main:
         print("La distancia que recorrerá será:")
         print(ruta[0], "metros")
 
+        self.visualize_ruta(ruta[1])
+
         hist_pedido = self.historial.get_item(pedido)
         hist_pedido["estado"] = "Entregado"
         self.historial.remove_item(pedido)
@@ -214,19 +244,38 @@ class Main:
         hist = self.historial.items()
         hist = list(filter(lambda x: x[1]["estado"] == "sin entregar", hist))
         if len(hist) > 0:
-            print(hist)
+            for i in range(len(hist)):
+                for key in hist[i][1]:
+                    print(f"- {key}: {hist[i][1][key]}")
+
+                if i != len(hist)-1:
+                    print()
         else:
-            print("Aun no hay peididos")
+            print("Aun no hay pedidos")
 
     def consultar_enviados(self):
         hist = self.historial.items()
         hist = list(filter(lambda x: x[1]["estado"] == "Entregado", hist))
         if len(hist) > 0:
-            print(hist)
-        else:
-            print("Aun no hay peididos entregados")
-        
+            for i in range(len(hist)):
+                for key in hist[i][1]:
+                    print(f"- {key}: {hist[i][1][key]}")
 
+                if i != len(hist)-1:
+                    print()
+        else:
+            print("Aun no hay pedidos entregados")
+
+    def consultar_detalles_pedido(self):
+        ubicacion = input("\nIngrese el nombre de la ubicación exacta: ")
+        pedido = self.historial.get_item(ubicacion)
+        for key in pedido:
+            print(f"{key}: {pedido[key]}")
+
+    def consultar_ubiaciones_pedidos(self):
+        for loc in self.historial.keys():
+            print(f"- {loc}")
+        
     def main(self):
 
         self.inicializar_grafo()
@@ -244,20 +293,22 @@ class Main:
             print("6. Consultar los detalles de pedidos entregados")
             print("7. Enviar un pedido")
             
-            opcion = int(input("\nIngrese el numero de la opción deseada: "))
+            try:
+                opcion = int(input("\nIngrese el numero de la opción deseada: "))
+            except:
+                print("¡Ingrese una opcion valida!\n")
+                continue
+            
             if opcion == 0:
                 break
             elif opcion == 1:
-                self.visualize_graph("grafo")
+                self.visualize_graph()
             elif opcion == 2:
                 self.agregar_pedido()
             elif opcion == 3:
-                print("\n", self.historial.keys())
+                self.consultar_ubiaciones_pedidos()
             elif opcion == 4:
-                ubicacion = input("\nIngrese el nombre de la ubicación exacta: ")
-                pedido = self.historial.get_item(ubicacion)
-                for key in pedido:
-                    print(f"{key}: {pedido[key]}")
+                self.consultar_detalles_pedido()
             elif opcion == 5:
                 self.consultar_pedidos()
             elif opcion == 6:
