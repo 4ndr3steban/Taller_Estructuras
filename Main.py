@@ -158,6 +158,75 @@ class Main:
         # actualizamos el diccionario con los datos de ubicaciones y coordenadas
         self.data[pedido["ubicacion"]] = pedido["coordenadas"]
 
+    def enviar_pedido(self):
+
+        while True:
+            pedido = input("Ingrese la ubicación exacta del pedido a enviar: ")
+            if pedido in self.historial.keys():
+                ruta = self.grafo.dijkstra("Universidad Nacional - Sede Volador", pedido)
+                break
+            else:
+                print("Ubicación inexistente o no ingresada correctamente, intentelo nuevamente")
+                continue
+                    
+
+        print("\nPedido enviado correctamente\n")
+        print("La ruta que seguirá el mensajero es la siguiente:")
+        print(ruta[1])
+        print("La distancia que recorrerá será:")
+        print(ruta[0], "metros")
+
+        hist_pedido = self.historial.get_item(pedido)
+        hist_pedido["estado"] = "Entregado"
+        self.historial.remove_item(pedido)
+        self.historial.set_item(hist_pedido["ubicacion"], hist_pedido)
+
+        self.grafo.remove_vertex(pedido)
+        del self.data[pedido]
+
+        locs = list(self.data.keys())
+        cords = list(self.data.values())
+
+        # para guardar las distancias de un nodo al resto de nodos
+        distances = {}
+
+        # calcular las distancias de un nodo al resto de nodos
+        for idx in range(len(locs)-1):
+            # se agrega el nodo actual como key al dict distances
+            distances[locs[idx]] = []
+
+            for next in range(idx+1, len(locs)):
+
+                # calcula la distancia en km (formula de haversine me la recomendo el juanjo y yo confio)
+                dist = int(haversine(cords[idx], cords[next], Unit.KILOMETERS) * 1000)
+
+                # se agrega la distancia como valor al key(nodo actual) (distancia a cada nodo)
+                distances[locs[idx]].append((locs[next], dist))
+
+        for loc in distances:
+            # en cada nodo se ordena las distancias a las demas y se toma la primera
+            distances[loc].sort(key = lambda x: x[1])
+            distances[loc] = distances[loc][:2]
+            for neig in distances[loc]:
+                self.grafo.add_edge(loc, neig[0], neig[1])
+
+    def consultar_pedidos(self):
+        hist = self.historial.items()
+        hist = list(filter(lambda x: x[1]["estado"] == "sin entregar", hist))
+        if len(hist) > 0:
+            print(hist)
+        else:
+            print("Aun no hay peididos")
+
+    def consultar_enviados(self):
+        hist = self.historial.items()
+        hist = list(filter(lambda x: x[1]["estado"] == "Entregado", hist))
+        if len(hist) > 0:
+            print(hist)
+        else:
+            print("Aun no hay peididos entregados")
+        
+
     def main(self):
 
         self.inicializar_grafo()
@@ -171,6 +240,9 @@ class Main:
             print("2. Generar un nuevo pedido")
             print("3. Mostrar historial de lugares con pedidos")
             print("4. Consultar los detalles de pedidos en base a ubicacion")
+            print("5. Consultar los detalles de pedidos NO entregados")
+            print("6. Consultar los detalles de pedidos entregados")
+            print("7. Enviar un pedido")
             
             opcion = int(input("\nIngrese el numero de la opción deseada: "))
             if opcion == 0:
@@ -186,6 +258,12 @@ class Main:
                 pedido = self.historial.get_item(ubicacion)
                 for key in pedido:
                     print(f"{key}: {pedido[key]}")
+            elif opcion == 5:
+                self.consultar_pedidos()
+            elif opcion == 6:
+                self.consultar_enviados()
+            elif opcion == 7:
+                self.enviar_pedido()
 
             print()
 
