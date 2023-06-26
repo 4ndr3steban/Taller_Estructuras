@@ -150,7 +150,7 @@ class Main:
                 print("2. David")
                 print("3. Andres")
                 mens = int(input("Ingrese el numero del mensajero al cual quiere asignar este pedido: "))
-                print(mens)
+                #print(mens)
                 if mens == 1:
                     pedido["mensajero"]  = "Camila"
                     self.mensajeros["Camila"] += 1
@@ -348,19 +348,30 @@ class Main:
         return costo
     
     def consultar_mensajero(self):
-        print("MENSAJEROS:")
-        print("1. Camila")
-        print("2. David")
-        print("3. Andres")
-        mens = int(input("Ingrese el numero del mensajero al cual quiere consultar el numero de pedidos entregados: "))
-        if mens == 1:
-            print(f"El mensajero Camila tiene {self.mensajeros['Camila']} pedidos asignados.")
-        elif mens == 2:
-            print(f"El mensajero David tiene{self.mensajeros['David']} pedidos asignados.")
-        elif mens == 3:
-            print(f"El mensajero Andres tiene {self.mensajeros['Andres']} pedidos asignados.")
-        else:
-            print("Opcion no valida\n")
+
+        while True:
+            print("MENSAJEROS:")
+            print("1. Camila")
+            print("2. David")
+            print("3. Andres")
+
+            try:
+                mens = int(input("Ingrese el numero del mensajero al cual quiere consultar el numero de pedidos entregados: "))
+            except:
+                print("Ingrese un numero por favor")
+                continue
+
+            if mens == 1:
+                print(f"El mensajero Camila tiene {self.mensajeros['Camila']} pedidos asignados.")
+            elif mens == 2:
+                print(f"El mensajero David tiene {self.mensajeros['David']} pedidos asignados.")
+            elif mens == 3:
+                print(f"El mensajero Andres tiene {self.mensajeros['Andres']} pedidos asignados.")
+            else:
+                print("Opcion no valida\n")
+                continue
+
+            break
 
 
     def main(self):
