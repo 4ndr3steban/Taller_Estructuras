@@ -15,6 +15,7 @@ class Main:
         self.historial = Hast_table_sc()
         self.grafo = Graph()
         self.data = None
+        self.rango_dist = [(dist, dist+299) for dist in range(0, 5000, 300)]
         
         self.id_pedido = 0
 
@@ -205,6 +206,8 @@ class Main:
         print(ruta[1])
         print("La distancia que recorrerá será:")
         print(ruta[0], "metros")
+        print("Este envio tendrá un costo de:")
+        print("$", self.calcular_costo_envio(ruta[0]), "COP")
 
         self.visualize_ruta(ruta[1])
 
@@ -307,6 +310,30 @@ class Main:
         print(f"Y hasta la entrega del ultimo pedido, recorre una distancia de: {costo} metros")
 
         self.visualize_ruta(ruta_pedidos)
+
+    def calcular_costo_envio(self, distancia):
+
+        def binary_search(lista, x):
+            low = 0
+            high = len(lista) - 1
+
+            while low <= high:
+
+                pm = low + (high - low) // 2
+
+                if lista[pm][0] < x < lista[pm][1]:
+                    return pm
+                elif lista[pm][0] > x:
+                    high = pm - 1 
+                else: 
+                    low = pm + 1
+
+            return 20
+        
+
+        costo = binary_search(self.rango_dist, distancia) * 1000
+
+        return costo
 
     def main(self):
 
