@@ -373,13 +373,13 @@ class Main:
 
             break
 
-
     def main(self):
 
         self.inicializar_grafo()
 
         while True:
             print("Representación de red de mensajería mediante grafos")
+            print("La empresa de mensajería simulada tiene su sede central en 'Universidad Nacional - Sede Medellín'")
             print("Por medio de este menú puede acceder a las diferentes funciones del grafo\n")
 
             print("0. Terminar ejecución")
