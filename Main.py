@@ -18,8 +18,6 @@ class Main:
         self.data = None
         self.rango_dist = [(dist, dist+299) for dist in range(0, 5000, 300)]
         
-        self.id_pedido = 0
-
         self.main()
 
     def inicializar_grafo(self):
@@ -178,7 +176,6 @@ class Main:
         
         # agregamos el pedido a la tabla hash del historial
         self.historial.set_item(pedido["ubicacion"], pedido)
-        #self.id_pedido += 1
 
         # agregamos la ubicacion del pedido al grafo 
         self.grafo.add_vertex(pedido["ubicacion"])
@@ -305,14 +302,11 @@ class Main:
 
         rutas = permutations(ubicaciones_pedidos)
         for ruta in rutas:
-            punto_base = (float("inf"), None)
-            for neighbor in self.grafo.graph[ruta[0]]:
-                dist = self.grafo.graph[ruta[0]][neighbor] 
-                if  dist < punto_base[0] and neighbor not in ruta:
-                    punto_base = dist, neighbor
-                    
-            costo = punto_base[0] 
-            rut = [[punto_base[1], ruta[0]]]
+
+            punto_base = min((item for item in list(self.grafo.graph[ruta[0]].items()) if item[0] not in ruta), key=lambda x: x[1])
+
+            costo = punto_base[1] 
+            rut = [[punto_base[0], ruta[0]]]
             for i in range(len(ruta)-1):
                 dist,path = self.grafo.dijkstra(ruta[i], ruta[i+1])
                 costo += dist
@@ -320,9 +314,9 @@ class Main:
                 
             heap.insert([costo, rut])
 
-        min = heap.delMin()
-        costo = min[0]
-        ruta_pedidos = [*min[1]]
+        minimo = heap.delMin()
+        costo = minimo[0]
+        ruta_pedidos = [*minimo[1]]
 
         print(f"La mejor ruta es: {ruta_pedidos}")
         print(f"Y hasta la entrega del ultimo pedido, recorre una distancia de: {costo} metros")
@@ -358,7 +352,7 @@ class Main:
         print("1. Camila")
         print("2. David")
         print("3. Andres")
-        mens = int(input("Ingrese el numero del mensajero al cual quiere consultar el numero de pedidos asignados: "))
+        mens = int(input("Ingrese el numero del mensajero al cual quiere consultar el numero de pedidos entregados: "))
         if mens == 1:
             print(f"El mensajero Camila ha realizado {self.mensajeros['Camila']} entregas.")
         elif mens == 2:
