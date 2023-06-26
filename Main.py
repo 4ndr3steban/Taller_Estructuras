@@ -13,6 +13,7 @@ class Main:
 
     def __init__(self):
         self.historial = Hast_table_sc()
+        self.mensajeros = {"Camila": 0, "David": 0, "Andres": 0}
         self.grafo = Graph()
         self.data = None
         self.rango_dist = [(dist, dist+299) for dist in range(0, 5000, 300)]
@@ -146,6 +147,24 @@ class Main:
                     raise RuntimeError
                 
                 pedido["descripcion"] = input("Ingrese la descripcion de su pedido: ")
+                print("MENSAJEROS:")
+                print("1. Camila")
+                print("2. David")
+                print("3. Andres")
+                mens = int(input("Ingrese el numero del mensajero al cual quiere asignar este pedido: "))
+                print(mens)
+                if mens == 1:
+                    pedido["mensajero"]  = "Camila"
+                    self.mensajeros["Camila"] += 1
+                elif mens == 2:
+                    pedido["mensajero"]  = "David"
+                    self.mensajeros["Camila"] += 1
+                elif mens == 3:
+                    pedido["mensajero"]  = "Andres"
+                    self.mensajeros["Camila"] += 1
+                else:
+                    print("¡Ingrese los datos adecuadamente!\n")
+                    continue
                 break
 
             except:
@@ -154,7 +173,6 @@ class Main:
 
         pedido["fecha"] = datetime.now()
         pedido["estado"] = "sin entregar"
-        pedido["mensajero"] = "sin asignar"
 
         print("\n¡Pedido agregado con exito!")
         
@@ -334,6 +352,22 @@ class Main:
         costo = binary_search(self.rango_dist, distancia) * 1000
 
         return costo
+    
+    def consultar_mensajero(self):
+        print("MENSAJEROS:")
+        print("1. Camila")
+        print("2. David")
+        print("3. Andres")
+        mens = int(input("Ingrese el numero del mensajero al cual quiere consultar el numero de pedidos asignados: "))
+        if mens == 1:
+            print(f"El mensajero Camila ha realizado {self.mensajeros['Camila']} entregas.")
+        elif mens == 2:
+            print(f"El mensajero David ha realizado {self.mensajeros['David']} entregas.")
+        elif mens == 3:
+            print(f"El mensajero Andres ha realizado {self.mensajeros['Andres']} entregas.")
+        else:
+            print("Opcion no valida\n")
+
 
     def main(self):
 
@@ -352,6 +386,7 @@ class Main:
             print("6. Consultar los detalles de pedidos entregados")
             print("7. Enviar un pedido")
             print("8. Encontrar mejor punto de partida para entregar todos los pedidos con un solo mensajero")
+            print("9. Consultar pedidos asignados a un mensajero")
             
             try:
                 opcion = int(input("\nIngrese el numero de la opción deseada: "))
@@ -377,6 +412,8 @@ class Main:
                 self.enviar_pedido()
             elif opcion == 8:
                 self.mejor_punto_partida()
+            elif opcion == 9:
+                self.consultar_mensajero()
 
             print()
 
