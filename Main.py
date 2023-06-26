@@ -156,10 +156,10 @@ class Main:
                     self.mensajeros["Camila"] += 1
                 elif mens == 2:
                     pedido["mensajero"]  = "David"
-                    self.mensajeros["Camila"] += 1
+                    self.mensajeros["David"] += 1
                 elif mens == 3:
                     pedido["mensajero"]  = "Andres"
-                    self.mensajeros["Camila"] += 1
+                    self.mensajeros["Andres"] += 1
                 else:
                     print("¡Ingrese los datos adecuadamente!\n")
                     continue
@@ -354,11 +354,11 @@ class Main:
         print("3. Andres")
         mens = int(input("Ingrese el numero del mensajero al cual quiere consultar el numero de pedidos entregados: "))
         if mens == 1:
-            print(f"El mensajero Camila ha realizado {self.mensajeros['Camila']} entregas.")
+            print(f"El mensajero Camila tiene {self.mensajeros['Camila']} pedidos asignados.")
         elif mens == 2:
-            print(f"El mensajero David ha realizado {self.mensajeros['David']} entregas.")
+            print(f"El mensajero David tiene{self.mensajeros['David']} pedidos asignados.")
         elif mens == 3:
-            print(f"El mensajero Andres ha realizado {self.mensajeros['Andres']} entregas.")
+            print(f"El mensajero Andres tiene {self.mensajeros['Andres']} pedidos asignados.")
         else:
             print("Opcion no valida\n")
 
