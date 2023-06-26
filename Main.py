@@ -158,10 +158,10 @@ class Main:
                     self.mensajeros["Camila"] += 1
                 elif mens == 2:
                     pedido["mensajero"]  = "David"
-                    self.mensajeros["Camila"] += 1
+                    self.mensajeros["David"] += 1
                 elif mens == 3:
                     pedido["mensajero"]  = "Andres"
-                    self.mensajeros["Camila"] += 1
+                    self.mensajeros["Andres"] += 1
                 else:
                     print("¡Ingrese los datos adecuadamente!\n")
                     continue
