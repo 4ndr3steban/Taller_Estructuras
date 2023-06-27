@@ -298,7 +298,13 @@ class Main:
         
     def mejor_punto_partida(self):
         heap = MinBinaryHeap()
-        ubicaciones_pedidos = self.historial.keys()
+        #ubicaciones_pedidos = filter(self.historial.keys())
+        ubicaciones_pedidos = [ubicacion for ubicacion in self.historial.keys() 
+                               if self.historial.get_item(ubicacion)["estado"] == "sin entregar"]
+
+        if len(ubicaciones_pedidos) == 0:
+            print("No hay pedidos para entregar")
+            return
 
         rutas = permutations(ubicaciones_pedidos)
         for ruta in rutas:
